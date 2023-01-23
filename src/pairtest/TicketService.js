@@ -62,16 +62,17 @@ module.exports = class TicketService {
         new TicketPaymentService().makePayment(accountId , totalAmount)
         isPaymentSuccussful = true
         
+        if(!isPaymentSuccussful){
+            return new TicketTypeResponse(isSeatReserved , isPaymentSuccussful , totalAmount , totalSeat, "error making payment")
+        }
         new SeatReservationService().reserveSeat(accountId , totalSeat)
         isSeatReserved = true
         
-        let response = new TicketTypeResponse(isSeatReserved , isPaymentSuccussful , totalAmount , totalSeat, "")
+        return new TicketTypeResponse(isSeatReserved , isPaymentSuccussful , totalAmount , totalSeat, "")
          
-        return response;
       }
     catch(error){
-        let errorResponse = new TicketTypeResponse(isSeatReserved , isPaymentSuccussful , totalAmount , totalSeat , error.message)
-        return errorResponse;
+        return new TicketTypeResponse(isSeatReserved , isPaymentSuccussful , totalAmount , totalSeat , error.message)
     }
   }
   #CalculateTicketAmount(totalInfantTicket , totalChildTicket , totalAldultTicket){
